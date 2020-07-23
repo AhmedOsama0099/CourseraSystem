@@ -58,7 +58,7 @@ public class AdminUserForm {
     int currAdminID;
     User user;
     AdminUserForm(User user){
-
+//
         frame = new JFrame();
         frame.setTitle("Admin User");
         frame.setSize(800, 600);
