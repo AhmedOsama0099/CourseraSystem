@@ -5,6 +5,7 @@ import com.oop.Model.Admin;
 import com.oop.Model.Course;
 import com.oop.Model.User;
 import com.oop.SQLiteConnection;
+import com.oop.View.RateView;
 import javafx.util.Pair;
 
 import java.sql.Connection;
@@ -125,4 +126,45 @@ public class AdminUserDAO implements  UserDAO{
 
         return chart;
     }
+
+    public ArrayList<RateView>getNumberOfAllCoursesRateNumber(){
+        ArrayList<RateView>rates=new ArrayList<>();
+        CourseDAO courseDAO=new CourseDAO();
+        ArrayList<Course>courses=courseDAO.getAllCourses();
+        Connection connection= SQLiteConnection.getConnection();
+        String sqlQuery;
+        for(Course course:courses){
+            RateView rateView=new RateView();
+            rateView.courseCode=course.getCode();
+
+            sqlQuery="SELECT count(*) from joined_courses where course_code='"+course.getCode()+"' and course_rate='Good'";
+            try {
+
+                PreparedStatement preparedStatement=connection.prepareStatement(sqlQuery);
+                ResultSet rs=preparedStatement.executeQuery();
+                if(rs.next())
+                    rateView.good=rs.getInt(1);
+                else
+                    rateView.good=0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            sqlQuery="SELECT count(*) from joined_courses where course_code='"+course.getCode()+"' and course_rate='Bad'";
+            try {
+
+                PreparedStatement preparedStatement=connection.prepareStatement(sqlQuery);
+                ResultSet rs=preparedStatement.executeQuery();
+                if(rs.next())
+                    rateView.bad=rs.getInt(1);
+                else
+                    rateView.bad=0;
+                rates.add(rateView);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return rates;
+    }
+
 }

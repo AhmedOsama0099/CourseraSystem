@@ -46,10 +46,15 @@ public class AdminUserForm {
     private JPanel addFilleToCoursePannel;
     private JPanel addCourseInputPanel;
     private JPanel chartPannel;
+    private JTable coursesRateTable;
+    private JTextField courseCodeForDeleteField;
+    private JButton deleteButton;
+    private JTable courseForDeleteTable;
     AdminUserController adminUserController;
     CourseController courseController;
     AttachedFileController attachedFileController;
     private DefaultTableModel coursesTableModel;
+    private DefaultTableModel coursesRateTableModel;
     int currAdminID;
     User user;
     AdminUserForm(User user){
@@ -66,21 +71,46 @@ public class AdminUserForm {
         this.user=user;
         this.currAdminID=adminUserController.getUserID(user);
         setCoursesTable();
-
-        /*DefaultPieDataset pieDataset=new DefaultPieDataset();
-        pieDataset.setValue("one", Integer.valueOf(10));
-        pieDataset.setValue("two", Integer.valueOf(20));
-        pieDataset.setValue("three", Integer.valueOf(30));
-        pieDataset.setValue("four", Integer.valueOf(40));
-        JFreeChart chart=ChartFactory.createPieChart("pie",pieDataset,true,true,true);
-        //PiePlot3D p=(PiePlot3D)chart.getPlot();
-        //p.setForegroundAlpha(TOP_ALLIGNMENRT);
-        ChartFrame frame=new ChartFrame("pe chart",chart);
-        frame.setVisible(true);
-        frame.setSize(450,500);*/
         chartPannel.setLayout(new BorderLayout());
         chartPannel.add(getChartPanel(), BorderLayout.CENTER);
+        setCoursesRateTable();
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String courseCode=courseCodeForDeleteField.getText().trim();
+                if(courseCode.isEmpty()){
+                    JOptionPane.showMessageDialog(frame,"Course code can't be empty");
+                    return;
+                }
+                if(adminUserController.deleteCourse(courseCode)){
+                    JOptionPane.showMessageDialog(frame,"delete successfully");
+                }
+                else{
+                    JOptionPane.showMessageDialog(frame,"course not found");
+                }
+            }
+        });
     }
+
+    private void setCoursesRateTable() {
+        coursesRateTableModel=new DefaultTableModel();
+        coursesRateTable.setEnabled(false);
+        coursesRateTable.setModel(coursesRateTableModel);
+        coursesRateTableModel.addColumn("course_code");
+        coursesRateTableModel.addColumn("good_number");
+        coursesRateTableModel.addColumn("bad_number");
+
+
+        setCoursesRateTableData();
+    }
+
+    private void setCoursesRateTableData() {
+        ArrayList<RateView>rateViews=adminUserController.getNumberOfAllCoursesRateNumber();
+        for(RateView rateView:rateViews){
+            coursesRateTableModel.insertRow(coursesRateTableModel.getRowCount(), new Object[]{ String.valueOf(rateView.getCourseCode()), rateView.getGood(), rateView.getBad()});
+        }
+    }
+
     private  PieDataset createDataset( ) {
         DefaultPieDataset dataset = new DefaultPieDataset( );
 
@@ -114,6 +144,9 @@ public class AdminUserForm {
         coursesTableModel.addColumn("admin_id");
         coursesTableModel.addColumn("code");
         coursesTableModel.addColumn("name");
+
+        courseForDeleteTable.setEnabled(false);
+        courseForDeleteTable.setModel(coursesTableModel);
         setCoursesTableData();
     }
 

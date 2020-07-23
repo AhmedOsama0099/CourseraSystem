@@ -1,16 +1,19 @@
 package com.oop.Controllers.Users;
 
+import com.oop.DAO.Course.CourseDAO;
 import com.oop.DAO.Users.AdminUserDAO;
 import com.oop.Model.User;
+import com.oop.View.RateView;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 
 public class AdminUserController implements UserController {
     AdminUserDAO adminUserDAO;
-
+    CourseDAO courseDAO;
     public AdminUserController() {
         adminUserDAO = new AdminUserDAO();
+        courseDAO=new CourseDAO();
     }
 
     @Override
@@ -31,4 +34,6 @@ public class AdminUserController implements UserController {
     public ArrayList<Pair<String, Integer>> getNumberOfUsersJoinedInAllCourses() {
         return adminUserDAO.getNumberOfUsersJoinedInAllCourses();
     }
+    public ArrayList<RateView>getNumberOfAllCoursesRateNumber(){return adminUserDAO.getNumberOfAllCoursesRateNumber();}
+    public boolean deleteCourse(String courseCode){return courseDAO.deleteCourse(courseCode);}
 }

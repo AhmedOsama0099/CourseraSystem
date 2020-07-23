@@ -161,9 +161,14 @@ public class NormalUserForm {
             public void actionPerformed(ActionEvent actionEvent) {
                 String courseCode = joinCourseCodeFileld.getText().trim();
                 if (courseCode.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "course code can't be empty");
+                    JOptionPane.showMessageDialog(frame, "Course code can't be empty");
                 } else {
+
                     if (courseController.joinCourse(courseCode, currUserID)) {
+                        if(!checkCourse(courseCode)){
+                            JOptionPane.showMessageDialog(frame, "Course not found");
+                            return;
+                        }
                         JOptionPane.showMessageDialog(frame, "joined successfully");
                         joinedCourses.add(courseController.getCourseByCourseCode(courseCode));
                         setJoinedCoursesTableData();

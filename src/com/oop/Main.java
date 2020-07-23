@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Main {
@@ -22,7 +25,13 @@ public class Main {
 //        Files.copy(source.toPath(), dest.toPath(),
 //                StandardCopyOption.REPLACE_EXISTING);*/
 //        System.out.println(source.getName());
-
+        String sqlQuery = "DELETE FROM course";
+        try {
+            Connection connection = SQLiteConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
     static void test(User user){
         System.out.println(user.getEmail());

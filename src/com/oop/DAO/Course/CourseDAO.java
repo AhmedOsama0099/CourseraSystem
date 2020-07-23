@@ -143,5 +143,29 @@ public class CourseDAO {
             return false;
         }
     }
+    public boolean deleteCourse(String courseCode){
+
+        String sqlQuery="select * from course where code='"+courseCode+"'";
+        try {
+            Connection connection= SQLiteConnection.getConnection();
+            PreparedStatement preparedStatement=connection.prepareStatement(sqlQuery);
+            ResultSet rs=preparedStatement.executeQuery();
+            if (!rs.next()){
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        sqlQuery = "DELETE FROM course WHERE code='"+courseCode+"'";
+        try {
+            Connection connection = SQLiteConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 
 }
